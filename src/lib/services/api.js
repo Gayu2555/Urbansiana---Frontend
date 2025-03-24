@@ -5,7 +5,7 @@ import { get } from "svelte/store";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "http://192.168.1.150:3000/api/articles";
-let apiKey = "51da4d02af70478b363f7d79ac9e80fc066173d9c10e0c3a5925ab8d1217a901";
+let apiKey = "";
 
 // Inisialisasi API key dari localStorage jika tersedia
 if (browser) {
