@@ -1,6 +1,7 @@
 <script lang="ts">
   // Import tipe data dari SvelteKit
   import type { PageData } from './$types';
+  import {goto} from '$app/navigation';
   
   // Data yang diterima dari server
   export let data: PageData;
@@ -11,6 +12,10 @@
   // Fungsi untuk refresh halaman
   function refreshPage() {
     window.location.reload();
+  }
+
+  function navigateToArticle(id: number) {
+    goto('/article/${id');
   }
 </script>
 
@@ -59,7 +64,7 @@
     {:else}
       <!-- Headline News -->
       {#if headlineNews}
-        <div class="mb-6">
+        <div class="mb-6 cursor-pointer" on:click={() => navigateToArticle(headlineNews.id)}>
           <div class="bg-white border-b pb-6">
             <div class="flex flex-col md:flex-row">
               <div class="md:w-1/2 md:pr-6 order-2 md:order-1">
