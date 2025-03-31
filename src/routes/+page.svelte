@@ -1,21 +1,23 @@
 <script lang="ts">
-  // Import tipe data dari SvelteKit
   import type { PageData } from './$types';
-  import {goto} from '$app/navigation';
+  import { goto } from '$app/navigation';
+  import Navbar from '$lib/components/Navbar.svelte';
   
-  // Data yang diterima dari server
   export let data: PageData;
   
-  // Destructure data yang kita terima dari server
   let { headlineNews, smallNews, articles, error } = data;
   
-  // Fungsi untuk refresh halaman
   function refreshPage() {
     window.location.reload();
   }
 
-  function navigateToArticle(id: number) {
-    goto('/article/${id');
+  function navigateToArticle(slug: string) {
+    // Pastikan slug tidak undefined, gunakan ID artikel sebagai fallback jika perlu
+    if (!slug) {
+      console.error('Slug artikel tidak ditemukan');
+      return; // Hindari navigasi jika slug tidak ada
+    }
+    goto(`/article/${slug}`);
   }
 </script>
 
@@ -24,26 +26,8 @@
 </svelte:head>
 
 <div class="min-h-screen bg-gray-100">
-  <!-- Header -->
-  <header class="bg-white shadow-md">
-    <div class="container mx-auto px-4 py-4">
-      <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-red-600">Portal Berita</h1>
-        <nav class="hidden md:flex space-x-4">
-          <a href="/" class="px-3 py-2 text-gray-700 hover:text-red-600 font-medium">Beranda</a>
-          <a href="/nasional" class="px-3 py-2 text-gray-700 hover:text-red-600">Nasional</a>
-          <a href="/ekonomi" class="px-3 py-2 text-gray-700 hover:text-red-600">Ekonomi</a>
-          <a href="/olahraga" class="px-3 py-2 text-gray-700 hover:text-red-600">Olahraga</a>
-          <a href="/teknologi" class="px-3 py-2 text-gray-700 hover:text-red-600">Teknologi</a>
-        </nav>
-        <button class="md:hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
+  <!-- Navbar (menggantikan header lama) -->
+  <Navbar />
   
   <!-- Main Content -->
   <main class="container mx-auto px-4 py-6">
@@ -64,7 +48,7 @@
     {:else}
       <!-- Headline News -->
       {#if headlineNews}
-        <div class="mb-6 cursor-pointer" on:click={() => navigateToArticle(headlineNews.id)}>
+        <div class="mb-6 cursor-pointer" on:click={() => navigateToArticle(headlineNews.slug)}>
           <div class="bg-white border-b pb-6">
             <div class="flex flex-col md:flex-row">
               <div class="md:w-1/2 md:pr-6 order-2 md:order-1">
@@ -85,7 +69,7 @@
               </div>
               <div class="md:w-1/2 mb-4 md:mb-0 order-1 md:order-2">
                 <img 
-                  src={headlineNews.image} 
+                  src={headlineNews.image || "/placeholder.svg"} 
                   alt={headlineNews.title} 
                   class="w-full h-auto object-cover"
                 />
@@ -99,10 +83,10 @@
       {#if smallNews.length > 0}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {#each smallNews as news (news.id)}
-            <div class="bg-white p-3 flex items-center">
+            <div class="bg-white p-3 flex items-center cursor-pointer" on:click={() => navigateToArticle(news.slug)}>
               <div class="w-1/3 md:w-1/4">
                 <img 
-                  src={news.image} 
+                  src={news.image || "/placeholder.svg"} 
                   alt={news.title} 
                   class="w-full h-auto object-cover"
                 />
@@ -123,10 +107,10 @@
         {#if articles.length > 0}
           {#each articles as article (article.id)}
             <div class="bg-white rounded-sm overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-              <a href={`/article/${article.id}`} class="flex flex-row">
+              <div class="flex flex-row cursor-pointer" on:click={() => navigateToArticle(article.slug)}>
                 <div class="w-1/3 md:w-1/4 lg:w-1/5">
                   <img 
-                    src={article.image} 
+                    src={article.image || "/placeholder.svg"} 
                     alt={article.title} 
                     class="w-full h-full object-cover"
                     style="aspect-ratio: 4/3;"
@@ -148,7 +132,7 @@
                     </span>
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
           {/each}
         {:else}
