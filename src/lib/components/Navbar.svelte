@@ -28,27 +28,30 @@
 
 <nav class="bg-white shadow-lg sticky top-0 z-50">
   <div class="container mx-auto max-w-5xl px-4">
-    <div class="flex items-center justify-between h-20">
+    <div class="flex items-center justify-between h-16 sm:h-20">
       <!-- Logo -->
       <a 
         href="/" 
         class="flex-shrink-0 flex items-center cursor-pointer"
         aria-label="Beranda"
       >
-        <img 
-          src={logoPath} 
-          alt="Logo" 
-          class="h-50 w-65 md:w-45 object-contain"
-        >
+        <div class="w-11 sm:w-40 md:w-48 h-auto relative">
+          <img 
+            src={logoPath || "/placeholder.svg"} 
+            alt="Logo" 
+            class="w-full h-auto object-contain max-h-46"
+            loading="eager"
+          >
+        </div>
       </a>
 
       <!-- Toggle Pencarian Seluler -->
       <button 
         on:click={togglePencarianSeluler} 
-        class="md:hidden text-gray-600 hover:text-primary transition-colors"
+        class="md:hidden text-gray-600 hover:text-primary transition-colors p-2"
         aria-label="Toggle Pencarian Seluler"
       >
-        <Search size={24} />
+        <Search size={22} />
       </button>
 
       <!-- Pencarian Desktop -->
@@ -56,19 +59,19 @@
         on:submit={tanganiPencarian}
         class="hidden md:flex items-center justify-center flex-1 mx-4"
       >
-        <div class="w-3/5 relative group">
+        <div class="w-full max-w-md relative group">
           <input 
             type="search" 
             bind:value={$kueriPencarian}
             placeholder="Cari apa pun..."
-            class="w-full px-4 py-3 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-sm"
           >
           <button 
             type="submit"
             class="absolute right-1 top-1/2 -translate-y-1/2 p-2 text-gray-500 group-focus-within:text-primary"
             aria-label="Kirim Pencarian"
           >
-            <Search size={20} />
+            <Search size={18} />
           </button>
         </div>
       </form>
@@ -80,31 +83,42 @@
         transition:fly="{{ y: 20, duration: 300 }}"
         class="fixed inset-0 bg-white z-50 md:hidden"
       >
-        <div class="p-4">
-          <!-- Tombol Tutup -->
-          <button 
-            on:click={tutupPencarianSeluler}
-            class="absolute top-4 right-4 text-gray-600 hover:text-primary"
-            aria-label="Tutup Pencarian"
-          >
-            <X size={28} />
-          </button>
+        <div class="p-4 flex flex-col h-full">
+          <div class="flex justify-between items-center">
+            <!-- Logo di Overlay -->
+            <div class="w-32 sm:w-40 h-auto">
+              <img 
+                src={logoPath || "/placeholder.svg"} 
+                alt="Logo" 
+                class="w-full h-auto object-contain max-h-10"
+              >
+            </div>
+            
+            <!-- Tombol Tutup -->
+            <button 
+              on:click={tutupPencarianSeluler}
+              class="text-gray-600 hover:text-primary p-2"
+              aria-label="Tutup Pencarian"
+            >
+              <X size={24} />
+            </button>
+          </div>
 
           <!-- Form Pencarian Seluler -->
           <form 
             on:submit={tanganiPencarian}
-            class="mt-16 flex flex-col space-y-4"
+            class="mt-8 flex flex-col space-y-4 flex-grow"
           >
             <input 
               type="search" 
               bind:value={$kueriPencarian}
               placeholder="Cari apa pun..."
-              class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 text-lg"
+              class="w-full px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 text-base"
               autofocus
             >
             <button 
               type="submit"
-              class="w-full py-3 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors"
+              class="w-full py-2 bg-primary text-white rounded-full hover:bg-opacity-90 transition-colors"
             >
               Cari
             </button>
@@ -114,3 +128,12 @@
     {/if}
   </div>
 </nav>
+
+<style>
+  /* Pastikan logo tidak terlalu besar pada layar kecil */
+  @media (max-width: 640px) {
+    :global(img[alt="Logo"]) {
+      max-height: 2.5rem;
+    }
+  }
+</style>
